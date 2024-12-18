@@ -1,4 +1,4 @@
-﻿@model IEnumerable<WebProje.Models.Personel>
+@model IEnumerable<WebProje.Models.Personel>
 @using WebProje.Helpers
 
 <h1>Personel Listeleme</h1>
@@ -23,10 +23,18 @@
                 <td>@personel.Ad</td>
                 <td>@personel.Soyad</td>
                 <td>
-                    @foreach (var uzmanlik in personel.Uzmanliklar)
+                    @if (personel.Uzmanliklar != null && personel.Uzmanliklar.Any())
                     {
-                        <span>@uzmanlik.UzmanlikAdi</span>
-                        <br />
+                        @foreach (var uzmanlik in personel.Uzmanliklar)
+                        {
+                            <span>@uzmanlik.UzmanlikAdi</span>
+
+                            <br />
+                        }
+                    }
+                    else
+                    {
+                        <span>Uzmanlık yok</span>
                     }
                 </td>
                 <td>
