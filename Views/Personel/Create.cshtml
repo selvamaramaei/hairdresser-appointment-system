@@ -1,4 +1,4 @@
-﻿@model WebProje.Models.Personel
+@model WebProje.Models.Personel
 @using WebProje.Helpers
 
 <h1>Personel Ekle</h1>
@@ -28,7 +28,9 @@
 
     <div class="form-group">
         <label>Uzmanlıklar</label>
-        <select asp-for="Uzmanliklar" asp-items="ViewBag.Uzmanliklar" class="form-control" multiple>
+        <select asp-items="ViewBag.Uzmanliklar" name="seciliUzmanliklar" multiple class="form-control">
+            <option value="" disabled>Seçiniz</option>
+            <br />
         </select>
     </div>
 
@@ -56,4 +58,9 @@
     </div>
 
     <button type="submit" class="btn btn-primary">Kaydet</button>
+    <a asp-action="Listele" class="btn btn-secondary">İptal</a>
+
 </form>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
