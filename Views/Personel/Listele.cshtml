@@ -11,6 +11,7 @@
             <th>Ad</th>
             <th>Soyad</th>
             <th>Uzmanlıklar</th>
+            <th>Cinsiyet</th>
             <th>Mesai Saatleri</th>
             <th>Çalışma Günleri</th>
             <th>İşlemler</th>
@@ -37,10 +38,12 @@
                         <span>Uzmanlık yok</span>
                     }
                 </td>
+                <td>@personel.Cinsiyet</td>
                 <td>
                     @foreach (var mesai in personel.Mesailer)
                     {
                         <span>@mesai.BaslangicZamani - @mesai.BitisZamani</span>
+
                         <br />
                     }
                 </td>
@@ -50,6 +53,7 @@
                         foreach (var gun in mesai.CalistigiGunler)
                         {
                             <span>@GunHelper.GetTurkceGun(gun.Gun)</span>
+
                             <br />
                         }
                     }
@@ -57,6 +61,8 @@
                 <td>
                     <a asp-action="Edit" asp-route-id="@personel.Id" class="btn btn-warning btn-sm">Düzenle</a>
                     <a asp-action="Delete" asp-route-id="@personel.Id" class="btn btn-danger btn-sm">Sil</a>
+                    <br />
+                    <a asp-action="Randevular" asp-route-id="@personel.Id" class="btn btn-info btn-sm">Randevuları Görüntüle</a>
                 </td>
             </tr>
         }
