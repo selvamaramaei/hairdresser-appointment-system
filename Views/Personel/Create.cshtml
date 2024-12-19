@@ -25,15 +25,20 @@
         </select>
         <span asp-validation-for="Cinsiyet" class="text-danger"></span>
     </div>
-
+    <br />
     <div class="form-group">
         <label>Uzmanlıklar</label>
-        <select asp-items="ViewBag.Uzmanliklar" name="seciliUzmanliklar" multiple class="form-control">
-            <option value="" disabled>Seçiniz</option>
-            <br />
-        </select>
+        <div>
+            @foreach (var uzmanlik in ViewBag.Uzmanliklar)
+            {
+                <div class="form-check">
+                    <input type="checkbox" name="seciliUzmanliklar" value="@uzmanlik.Id" class="form-check-input" />
+                    <label class="form-check-label">@uzmanlik.UzmanlikAdi</label>
+                </div>
+            }
+        </div>
     </div>
-
+    <br />
     <div class="form-group">
         <label>Mesai Başlangıç Saati</label>
         <input type="time" name="MesaiBaslangic" class="form-control" />
