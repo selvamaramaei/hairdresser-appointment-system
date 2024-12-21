@@ -13,6 +13,9 @@ namespace WebProje.Models
         public string? UzmanlikAdi { get; set; }
 
         public ICollection<Islem> Islemler { get; set; } = new List<Islem>();
+
+        public ICollection<Personel> Personeller { get; set; } = new List<Personel>();
+
     }
 
 }
