@@ -1,0 +1,47 @@
+﻿@model WebProje.Models.User
+
+@{
+    ViewData["Title"] = "Register";
+}
+
+<h2>Register</h2>
+
+<form asp-action="Register" method="post">
+    <div class="form-group">
+        <label asp-for="Ad"></label>
+        <input asp-for="Ad" class="form-control" />
+        <span asp-validation-for="Ad" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Soyad"></label>
+        <input asp-for="Soyad" class="form-control" />
+        <span asp-validation-for="Soyad" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Telefon"></label>
+        <input asp-for="Telefon" class="form-control" />
+        <span asp-validation-for="Telefon" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Email"></label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Sifre"></label>
+        <input asp-for="Sifre" class="form-control" type="password" />
+        <span asp-validation-for="Sifre" class="text-danger"></span>
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary">Kayıt ol</button>
+</form>
+<br />
+<p>
+    Zaten hesabın varmı? <a asp-action="Login">Giriş yap</a>.
+</p>
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+}
+
