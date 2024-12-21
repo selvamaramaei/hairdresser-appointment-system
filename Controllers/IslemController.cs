@@ -2,6 +2,7 @@
 using WebProje.Models;
 using WebProje.Context;  
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebProje.Controllers
 {

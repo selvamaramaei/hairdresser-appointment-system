@@ -1,10 +1,11 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using WebProje.Context;
 using Microsoft.EntityFrameworkCore;
 using WebProje.Models;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebProje.Controllers
 {
@@ -17,9 +18,23 @@ namespace WebProje.Controllers
             _context = context;
         }
 
+        private IActionResult CheckAdminRole()
+        {
+            var role = HttpContext.Session.GetString("Role");
+            if (role == "Admin")
+            {
+                return null; // Admin ise herhangi bir işlem yapmadan devam et
+            }
+            return RedirectToAction("UserDashboard", "User"); // Kullanıcı paneline yönlendir
+        }
+
+
         // Personel Listeleme
         public async Task<IActionResult> Listele()
         {
+            var roleCheck = CheckAdminRole();
+            if (roleCheck != null) return roleCheck;
+
             var personeller = await _context.Personeller
                 .Include(p => p.Uzmanliklar)
                 .ThenInclude(u => u.Islemler)
@@ -30,9 +45,14 @@ namespace WebProje.Controllers
             return View(personeller);
         }
 
+
+
         // GET: Personel/Create
         public async Task<IActionResult> Create()
         {
+            var roleCheck = CheckAdminRole();
+            if (roleCheck != null) return roleCheck;
+
             ViewBag.Uzmanliklar = await _context.Uzmanliklar
                 .Select(u => new
                 {
@@ -43,12 +63,14 @@ namespace WebProje.Controllers
             return View();
         }
 
-
         // POST: Personel/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Personel personel, List<int> seciliUzmanliklar, string MesaiBaslangic, string MesaiBitis, List<DayOfWeek> CalismaGunleri)
         {
+            var roleCheck = CheckAdminRole();
+            if (roleCheck != null) return roleCheck;
+
             if (ModelState.IsValid)
             {
                 if (seciliUzmanliklar != null && seciliUzmanliklar.Any())
@@ -103,9 +125,15 @@ namespace WebProje.Controllers
         }
 
 
+
+
+
         // GET: Personel/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
+            var roleCheck = CheckAdminRole();
+            if (roleCheck != null) return roleCheck;
+
             var personel = await _context.Personeller
                 .Include(p => p.Uzmanliklar)
                 .Include(p => p.Mesailer)
@@ -117,12 +145,14 @@ namespace WebProje.Controllers
                 return NotFound();
             }
 
+            // Uzmanlıkları doldur
+            var personelUzmanlikIds = personel.Uzmanliklar.Select(uzmanlik => uzmanlik.Id).ToList();
             ViewBag.Uzmanliklar = await _context.Uzmanliklar
                 .Select(u => new SelectListItem
                 {
                     Value = u.Id.ToString(),
                     Text = u.UzmanlikAdi,
-                    Selected = personel.Uzmanliklar.Any(uzmanlik => uzmanlik.Id == u.Id) // Mevcut uzmanlıkları işaretle
+                    Selected = personelUzmanlikIds.Contains(u.Id)
                 }).ToListAsync();
 
             return View(personel);
@@ -131,8 +161,11 @@ namespace WebProje.Controllers
         // POST: Personel/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Personel personel, List<int> seciliUzmanliklar, TimeSpan MesaiBaslangic, TimeSpan MesaiBitis, List<DayOfWeek> CalismaGunleri)
+        public async Task<IActionResult> Edit(int id, Personel personel, List<int> seciliUzmanliklar, string MesaiBaslangic, string MesaiBitis, List<DayOfWeek> CalismaGunleri)
         {
+            var roleCheck = CheckAdminRole();
+            if (roleCheck != null) return roleCheck;
+
             if (id != personel.Id)
             {
                 return NotFound();
@@ -140,65 +173,66 @@ namespace WebProje.Controllers
 
             if (ModelState.IsValid)
             {
-                try
+                var mevcutPersonel = await _context.Personeller
+                    .Include(p => p.Uzmanliklar)
+                    .Include(p => p.Mesailer)
+                        .ThenInclude(m => m.CalistigiGunler)
+                    .FirstOrDefaultAsync(p => p.Id == id);
+
+                if (mevcutPersonel == null)
                 {
-                    // Personelin mevcut verilerini getir
-                    var mevcutPersonel = await _context.Personeller
-                        .Include(p => p.Mesailer)
-                            .ThenInclude(m => m.CalistigiGunler)
-                        .FirstOrDefaultAsync(p => p.Id == id);
+                    return NotFound();
+                }
 
-                    if (mevcutPersonel == null)
-                    {
-                        return NotFound();
-                    }
-
-                    // Uzmanlıkları güncelle
-                    var mevcutUzmanliklar = await _context.Uzmanliklar
+                // Uzmanlıkları güncelle
+                mevcutPersonel.Uzmanliklar.Clear();
+                if (seciliUzmanliklar != null && seciliUzmanliklar.Any())
+                {
+                    var uzmanliklar = await _context.Uzmanliklar
                         .Where(u => seciliUzmanliklar.Contains(u.Id))
                         .ToListAsync();
 
-                    // Mevcut uzmanlıkları temizleyip yeni uzmanlıkları ekleyelim
-                    mevcutPersonel.Uzmanliklar.Clear(); // Eski uzmanlıkları temizle
-                    foreach (var uzmanlik in mevcutUzmanliklar)
+                    foreach (var uzmanlik in uzmanliklar)
                     {
-                        mevcutPersonel.Uzmanliklar.Add(uzmanlik); // Yeni uzmanlıkları ekle
+                        mevcutPersonel.Uzmanliklar.Add(uzmanlik);
                     }
-                    // Mesai güncellemeleri
-                    var mesai = mevcutPersonel.Mesailer.FirstOrDefault();
-                    if (mesai != null)
-                    {
-                        mesai.BaslangicZamani = MesaiBaslangic;
-                        mesai.BitisZamani = MesaiBitis;
-
-                        // Mevcut çalışma günlerini temizle
-                        _context.MesaiGunleri.RemoveRange(mesai.CalistigiGunler);
-
-                        // Yeni çalışma günlerini ekle
-                        mesai.CalistigiGunler = CalismaGunleri.Select(gun => new MesaiGunu
-                        {
-                            Gun = gun
-                        }).ToList();
-                    }
-
-                    // Personeli güncelle
-                    _context.Update(mevcutPersonel);
-                    await _context.SaveChangesAsync();
-
-                    TempData["SuccessMessage"] = "Personel başarıyla güncellendi.";
                 }
-                catch (DbUpdateConcurrencyException)
+
+                // Mesai saatlerini güncelle
+                if (TimeSpan.TryParse(MesaiBaslangic, out TimeSpan mesaiBaslangic) && TimeSpan.TryParse(MesaiBitis, out TimeSpan mesaiBitis))
                 {
-                    if (!_context.Personeller.Any(e => e.Id == id))
+                    var mevcutMesai = mevcutPersonel.Mesailer.FirstOrDefault();
+                    if (mevcutMesai != null)
                     {
-                        return NotFound();
+                        mevcutMesai.BaslangicZamani = mesaiBaslangic;
+                        mevcutMesai.BitisZamani = mesaiBitis;
+
+                        // Çalışma günlerini güncelle
+                        mevcutMesai.CalistigiGunler.Clear();
+                        if (CalismaGunleri != null && CalismaGunleri.Any())
+                        {
+                            mevcutMesai.CalistigiGunler = CalismaGunleri.Select(gun => new MesaiGunu { Gun = gun }).ToList();
+                        }
                     }
                     else
                     {
-                        throw;
+                        mevcutPersonel.Mesailer.Add(new Mesai
+                        {
+                            BaslangicZamani = mesaiBaslangic,
+                            BitisZamani = mesaiBitis,
+                            CalistigiGunler = CalismaGunleri?.Select(gun => new MesaiGunu { Gun = gun }).ToList()
+                        });
                     }
                 }
 
+                mevcutPersonel.Ad = personel.Ad;
+                mevcutPersonel.Soyad = personel.Soyad;
+                mevcutPersonel.Cinsiyet = personel.Cinsiyet;
+
+                _context.Update(mevcutPersonel);
+                await _context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = "Personel başarıyla güncellendi.";
                 return RedirectToAction(nameof(Listele));
             }
 
@@ -212,9 +246,15 @@ namespace WebProje.Controllers
 
             return View(personel);
         }
+
+
+
         // GET: Personel/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
+            var roleCheck = CheckAdminRole();
+            if (roleCheck != null) return roleCheck;
+
             var personel = await _context.Personeller
                 .Include(p => p.Uzmanliklar)
                 .Include(p => p.Mesailer)
@@ -234,6 +274,9 @@ namespace WebProje.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            var roleCheck = CheckAdminRole();
+            if (roleCheck != null) return roleCheck;
+
             var personel = await _context.Personeller
                 .Include(p => p.Mesailer)
                     .ThenInclude(m => m.CalistigiGunler)
