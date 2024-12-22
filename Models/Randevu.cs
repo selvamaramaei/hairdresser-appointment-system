@@ -36,6 +36,9 @@ namespace WebProje.Models
         public DateTime RandevuTarihi { get; set; }
 
         [Required]
+        public TimeSpan RandevuSaati { get; set; }
+
+        [Required]
         public bool OnayliMi { get; set; }
 
         // Süre ve Ücret, Islem sınıfından alınır
