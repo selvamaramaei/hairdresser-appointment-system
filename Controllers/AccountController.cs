@@ -38,7 +38,8 @@ namespace WebProje.Controllers
 
                 // Kullanıcı kontrolü
                 HttpContext.Session.SetString("Username", $"{user.Ad} {user.Soyad}");
-                HttpContext.Session.SetString("Role", "User");
+                HttpContext.Session.SetString("UserId", user.Id.ToString()); // Kullanıcı ID'si oturuma kaydedilir.
+                HttpContext.Session.SetString("Role", user.Role);
                 return RedirectToAction("UserDashboard", "User");
             }
 
