@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebProje.Context;
 
@@ -11,9 +12,11 @@ using WebProje.Context;
 namespace WebProje.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241221153130_user")]
+    partial class user
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -172,9 +175,6 @@ namespace WebProje.Migrations
 
                     b.Property<int>("PersonelId")
                         .HasColumnType("int");
-
-                    b.Property<TimeSpan>("RandevuSaati")
-                        .HasColumnType("time");
 
                     b.Property<DateTime>("RandevuTarihi")
                         .HasColumnType("datetime2");
