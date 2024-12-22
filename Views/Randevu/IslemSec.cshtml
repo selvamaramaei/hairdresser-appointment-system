@@ -1,0 +1,37 @@
+﻿@model IEnumerable<WebProje.Models.PersonelUzmanlik>
+
+@{
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+
+    ViewBag.Title = "İşlem Seçimi";
+}
+
+<h2>İşlem Seçimi</h2>
+
+<p>Lütfen bir işlem seçin:</p>
+
+<form method="post" action="@Url.Action("PersonelSec", "Randevu")">
+    @foreach (var uzmanlik in Model)
+    {
+        <div class="card mb-3">
+            <div class="card-header">
+                <strong>@uzmanlik.UzmanlikAdi</strong>
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                    @foreach (var islem in uzmanlik.Islemler)
+                    {
+                        <li class="list-group-item">
+                            <input type="radio" name="islemId" value="@islem.Id" id="islem-@islem.Id" />
+                            <label for="islem-@islem.Id">
+                                @islem.Ad - @islem.Ucret.ToString("C") (Süre: @islem.Sure.TotalMinutes dak.)
+                            </label>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    }
+
+    <button type="submit" class="btn btn-primary">Devam Et</button>
+</form>

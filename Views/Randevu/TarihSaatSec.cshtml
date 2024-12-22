@@ -1,0 +1,42 @@
+﻿@{
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+@if (TempData["HataMesaji"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["HataMesaji"]
+    </div>
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header text-center bg-primary text-white">
+                    <h4>Randevu Tarihi ve Saati Seçimi</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="TarihSaatSec" method="post">
+                        <input type="hidden" name="islemId" value="@ViewBag.IslemId" />
+                        <input type="hidden" name="personelId" value="@ViewBag.PersonelId" />
+
+                        <div class="mb-3">
+                            <label for="randevuTarihi" class="form-label">Tarih:</label>
+                            <input type="date" id="randevuTarihi" name="randevuTarihi" class="form-control" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="randevuSaati" class="form-label">Saat:</label>
+                            <input type="time" id="randevuSaati" name="randevuSaati" class="form-control" required />
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Devam Et</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

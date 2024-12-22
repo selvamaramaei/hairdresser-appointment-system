@@ -1,0 +1,29 @@
+﻿@model IEnumerable<WebProje.Models.Personel>
+
+@{
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+    ViewBag.Title = "Personel Seçimi";
+}
+
+<h2>Personel Seçimi</h2>
+
+<p>Seçilen işlem: <strong>@ViewBag.Islem.Ad</strong></p>
+
+<form method="post" action="@Url.Action("TarihSaatSec", "Randevu")">
+    <input type="hidden" name="islemId" value="@ViewBag.Islem.Id" />
+
+    <p>Lütfen bir personel seçin:</p>
+    <ul class="list-group">
+        @foreach (var personel in Model)
+        {
+            <li class="list-group-item">
+                <input type="radio" name="personelId" value="@personel.Id" id="personel-@personel.Id" />
+                <label for="personel-@personel.Id">
+                    @personel.Ad @personel.Soyad (@personel.Cinsiyet)
+                </label>
+            </li>
+        }
+    </ul>
+
+    <button type="submit" class="btn btn-primary">Devam Et</button>
+</form>
