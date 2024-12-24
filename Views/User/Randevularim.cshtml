@@ -1,0 +1,43 @@
+﻿@model IEnumerable<WebProje.Models.Randevu>
+@{
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<h2>Randevularım</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>İşlem</th>
+            <th>Personel</th>
+            <th>Tarih</th>
+            <th>Saat</th>
+            <th>Durum</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var randevu in Model)
+        {
+            <tr>
+                <td>@randevu.Islem.Ad</td>
+                <td>@randevu.Personel.Ad @randevu.Personel.Soyad</td>
+                <td>@randevu.RandevuTarihi.ToShortDateString()</td>
+                <td>@randevu.RandevuSaati</td>
+                <td>
+                    @if (randevu.OnayliMi)
+                    {
+                        <span class="text-success">Onaylandı</span>
+                    }
+                    else if (!randevu.OnayliMi && randevu.Id != 0)
+                    {
+                        <span class="text-danger">Red Edildi</span>
+                    }
+                    else
+                    {
+                        <span class="text-warning">Onay Bekleniyor</span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
