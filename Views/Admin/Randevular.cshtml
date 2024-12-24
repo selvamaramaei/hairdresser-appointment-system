@@ -1,0 +1,50 @@
+﻿@model IEnumerable<WebProje.Models.Randevu>
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+}
+<h2>Randevu Yönetimi</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Kullanıcı</th>
+            <th>İşlem</th>
+            <th>Personel</th>
+            <th>Tarih</th>
+            <th>Saat</th>
+            <th>Durum</th>
+            <th>İşlemler</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var randevu in Model)
+        {
+            <tr>
+                <td>@randevu.User.Ad @randevu.User.Soyad</td>
+                <td>@randevu.Islem.Ad</td>
+                <td>@randevu.Personel.Ad @randevu.Personel.Soyad</td>
+                <td>@randevu.RandevuTarihi.ToShortDateString()</td>
+                <td>@randevu.RandevuSaati</td>
+                <td>@(randevu.OnayliMi ? "Onaylandı" : "Onay Bekliyor")</td>
+                <td>
+                    @if (!randevu.OnayliMi)
+                    {
+                        <form asp-action="Onayla" method="post" style="display: inline;">
+                            <input type="hidden" name="id" value="@randevu.Id" />
+                            <button type="submit" class="btn btn-success">Onayla</button>
+                        </form>
+                        <form asp-action="Reddet" method="post" style="display: inline;">
+                            <input type="hidden" name="id" value="@randevu.Id" />
+                            <button type="submit" class="btn btn-danger">Reddet</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <span>Onaylandı</span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
