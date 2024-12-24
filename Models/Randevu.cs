@@ -41,8 +41,11 @@ namespace WebProje.Models
         [Required]
         public bool OnayliMi { get; set; }
 
-        // Süre ve Ücret, Islem sınıfından alınır
-        public TimeSpan Sure => Islem?.Sure ?? TimeSpan.Zero;
-        public decimal Ucret => Islem?.Ucret ?? 0;
-    }
+        [Required]
+        public TimeSpan Sure { get; set; } 
+
+        [Required]
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal Ucret { get; set; } 
+}
 }
