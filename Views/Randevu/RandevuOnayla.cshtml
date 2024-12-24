@@ -1,28 +1,24 @@
 ﻿@model WebProje.Models.Randevu
-@{
-    Layout = "~/Views/Shared/_UserLayout.cshtml";
 
-    ViewBag.Title = "Randevu Onayla";
-}
+<h2>Randevu Özeti</h2>
+<p><strong>Ad:</strong> @Model.User.Ad</p>
+<p><strong>Soyad:</strong> @Model.User.Soyad</p>
+<p><strong>Telefon:</strong> @Model.User.Telefon</p>
+<p><strong>Seçilen İşlem:</strong> @Model.Islem.Ad</p>
+<p><strong>Seçilen Çalışan:</strong> @Model.Personel.Ad @Model.Personel.Soyad</p>
+<p><strong>Randevu Günü:</strong> @Model.RandevuTarihi.ToShortDateString()</p>
+<p><strong>Randevu Saati:</strong> @Model.RandevuSaati</p>
 
-<h2>Randevu Onayla</h2>
+<form method="post" action="@Url.Action("RandevuOnayla", "Randevu")">
+    <input type="hidden" name="UserId" value="@Model.User.Id" />
+    <input type="hidden" name="IslemId" value="@Model.Islem.Id" />
+    <input type="hidden" name="PersonelId" value="@Model.Personel.Id" />
+    <input type="hidden" name="RandevuTarihi" value="@Model.RandevuTarihi" />
+    <input type="hidden" name="RandevuSaati" value="@Model.RandevuSaati" />
+    <input type="hidden" name="Sure" value="@Model.Sure" />
+    <input type="hidden" name="Ucret" value="@Model.Ucret" />
 
-<div>
-    <p><strong>Ad:</strong> @ViewBag.User.Ad</p>
-    <p><strong>Soyad:</strong> @ViewBag.User.Soyad</p>
-    <p><strong>Telefon:</strong> @ViewBag.User.Telefon</p>
-    <p><strong>Cinsiyet:</strong> @ViewBag.User.Cinsiyet</p>
-    <p><strong>Seçilen İşlem:</strong> @ViewBag.Islem.Ad</p>
-    <p><strong>Seçilen Çalışan:</strong> @ViewBag.Personel.Ad @ViewBag.Personel.Soyad</p>
-    <p><strong>Tarih:</strong> @ViewBag.RandevuTarihi.ToShortDateString()</p>
-    <p><strong>Saat:</strong> @ViewBag.RandevuSaati</p>
-</div>
-
-<form asp-action="RandevuOnayla" method="post">
-    <input type="hidden" name="islemId" value="@ViewBag.Islem.Id" />
-    <input type="hidden" name="personelId" value="@ViewBag.Personel.Id" />
-    <input type="hidden" name="randevuTarihi" value="@ViewBag.RandevuTarihi" />
-    <input type="hidden" name="randevuSaati" value="@ViewBag.RandevuSaati" />
-    <button type="submit" class="btn btn-success">Onayla</button>
-    <a asp-action="TarihSaatSec" asp-route-islemId="@ViewBag.Islem.Id" asp-route-personelId="@ViewBag.Personel.Id" class="btn btn-secondary">Geri Dön</a>
+    <button type="submit" class="btn btn-success">Randevuyu Onayla</button>
+    <a href="@Url.Action("TarihSaatSec", "Randevu", new { islemId = Model.Islem.Id, personelId = Model.Personel.Id })" class="btn btn-warning">Geri Dön</a>
+    <a href="@Url.Action("UserDashboard", "User")" class="btn btn-danger">İptal Et</a>
 </form>

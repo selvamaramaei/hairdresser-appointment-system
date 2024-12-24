@@ -1,42 +1,40 @@
-﻿@{
+﻿@model WebProje.Models.Islem
+@{
     Layout = "~/Views/Shared/_UserLayout.cshtml";
+    ViewBag.Title = "Tarih ve Saat Seçimi";
 }
-@if (TempData["HataMesaji"] != null)
+@if (TempData["ErrorMessage"] != null)
 {
     <div class="alert alert-danger">
-        @TempData["HataMesaji"]
+        @TempData["ErrorMessage"]
     </div>
 }
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow-sm">
-                <div class="card-header text-center bg-primary text-white">
-                    <h4>Randevu Tarihi ve Saati Seçimi</h4>
-                </div>
-                <div class="card-body">
-                    <form asp-action="TarihSaatSec" method="post">
-                        <input type="hidden" name="islemId" value="@ViewBag.IslemId" />
-                        <input type="hidden" name="personelId" value="@ViewBag.PersonelId" />
-
-                        <div class="mb-3">
-                            <label for="randevuTarihi" class="form-label">Tarih:</label>
-                            <input type="date" id="randevuTarihi" name="randevuTarihi" class="form-control" required />
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="randevuSaati" class="form-label">Saat:</label>
-                            <input type="time" id="randevuSaati" name="randevuSaati" class="form-control" required />
-                        </div>
-
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-primary">Devam Et</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
     </div>
-</div>
+}
 
+<h2>Tarih ve Saat Seçimi</h2>
+
+<p>Seçilen işlem: <strong>@ViewBag.Islem.Ad</strong></p>
+<p>Seçilen personel: <strong>@ViewBag.Personel.Ad @ViewBag.Personel.Soyad</strong></p>
+
+<form method="post" action="@Url.Action("UygunlukKontrol", "Randevu")">
+    <input type="hidden" name="islemId" value="@ViewBag.Islem.Id" />
+    <input type="hidden" name="personelId" value="@ViewBag.Personel.Id" />
+
+    <div class="form-group">
+        <label for="randevuTarihi">Tarih:</label>
+        <input type="date" class="form-control" id="randevuTarihi" name="randevuTarihi" required />
+    </div>
+
+    <div class="form-group">
+        <label for="randevuSaati">Saat:</label>
+        <input type="time" class="form-control" id="randevuSaati" name="randevuSaati" required />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Uygunluk Kontrolü</button>
+</form>
