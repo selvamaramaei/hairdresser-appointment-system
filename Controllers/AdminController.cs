@@ -1,6 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Net.Http;
+using System.Text;
+using System.Text.Json;
 using WebProje.Context;
+using WebProje.Models;
 
 namespace WebProje.Controllers
 {
@@ -53,7 +57,7 @@ namespace WebProje.Controllers
                 return NotFound();
             }
 
-            randevu.OnayliMi = true;
+            randevu.Durum = "Onaylandı";
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Randevular");
@@ -70,10 +74,27 @@ namespace WebProje.Controllers
             }
 
             // _context.Randevular.Remove(randevu); 
-            randevu.OnayliMi = false;
+            randevu.Durum = "Reddedildi";
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Randevular");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Sil(int id)
+        {
+            var randevu = await _context.Randevular.FindAsync(id);
+            if (randevu == null)
+            {
+                return NotFound();
+            }
+
+            _context.Randevular.Remove(randevu);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Randevu başarıyla silindi.";
+            return RedirectToAction("Randevular", "Admin"); // Admin panelindeki randevu listesini gösteren action
         }
 
     }

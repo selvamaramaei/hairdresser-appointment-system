@@ -149,7 +149,7 @@ namespace WebProje.Controllers
                 Personel = personel,
                 RandevuTarihi = randevuTarihi,
                 RandevuSaati = randevuSaati,
-                OnayliMi = false,
+                Durum = "Beklemede",
                 Sure = islem.Sure,
                 Ucret = islem.Ucret
             };
@@ -161,7 +161,7 @@ namespace WebProje.Controllers
         public async Task<IActionResult> RandevuOnayla(Randevu randevu)
         {
                
-                randevu.OnayliMi = false; // Onay bekleniyor
+                randevu.Durum = "Beklemede"; // Onay bekleniyor
                 _context.Randevular.Add(randevu);
                 await _context.SaveChangesAsync();
 
@@ -169,6 +169,22 @@ namespace WebProje.Controllers
           
         }
 
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RandevuSil(int id)
+        {
+            var randevu = await _context.Randevular.FindAsync(id);
+            if (randevu == null)
+            {
+                return NotFound();
+            }
+
+            _context.Randevular.Remove(randevu);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Randevularim", "User"); // Kullanıcının randevu listesini gösteren bir action
+        }
 
 
 

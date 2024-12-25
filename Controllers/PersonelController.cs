@@ -308,11 +308,11 @@ namespace WebProje.Controllers
 
         public async Task<IActionResult> Randevular(int id)
         {
-            // İlgili personelin onaylı randevularını alıyoruz
+            // İlgili personelin onaylanmış randevularını alıyoruz
             var randevular = await _context.Randevular
                 .Include(r => r.User) // Kullanıcı bilgisi gerekiyorsa eklenebilir
                 .Include(r => r.Islem) // İşlem bilgisi gerekiyorsa eklenebilir
-                .Where(r => r.PersonelId == id && r.OnayliMi) // Sadece onaylı randevular
+                .Where(r => r.PersonelId == id && r.Durum == "Onaylandı") // Sadece onaylanmış randevular
                 .ToListAsync();
 
             // Personelin bilgilerini de alıyoruz (isteğe bağlı)
@@ -325,6 +325,7 @@ namespace WebProje.Controllers
             ViewBag.Personel = personel; // Personel bilgilerini View'e gönderiyoruz
             return View(randevular); // Randevuları View'e gönderiyoruz
         }
+
 
 
 
