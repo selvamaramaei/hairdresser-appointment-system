@@ -38,8 +38,9 @@ namespace WebProje.Models
         [Required]
         public TimeSpan RandevuSaati { get; set; }
 
+
         [Required]
-        public bool OnayliMi { get; set; }
+        public string Durum { get; set; } = "Beklemede";    
 
         [Required]
         public TimeSpan Sure { get; set; } 
