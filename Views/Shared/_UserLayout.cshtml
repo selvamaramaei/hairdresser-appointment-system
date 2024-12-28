@@ -11,7 +11,6 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="/css/tiny-slider.css" rel="stylesheet">
     <link href="/css/style.css" rel="stylesheet">
-
     <style>
         html, body {
             height: 100%;
@@ -32,6 +31,7 @@
         }
     </style>
 </head>
+
 <body>
     <!-- Start Header/Navigation -->
     <nav class="custom-navbar navbar navbar-expand-md navbar-dark bg-dark" aria-label="Furni navigation bar">
@@ -42,12 +42,18 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarsFurni">
                 <ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
-                    <li class="nav-item active"><a class="nav-link" asp-controller="Home" asp-action="Index">Ana sayfa</a></li>
-                    <li><a class="nav-link" asp-controller="Home" asp-action="Hizmetler">Hizmetlerimiz</a></li>
-                    <li><a class="nav-link" asp-controller="Home" asp-action="Hakkimizda">Hakkımızda</a></li>
-                    <li><a class="nav-link" asp-controller="Home" asp-action="Contact">Bize ulaşın</a></li>
-                    <li><a class="nav-link" asp-controller="Account" asp-action="Login">Giriş yap</a></li>
-                    <li><a class="nav-link" asp-controller="Account" asp-action="Register">Kaydol</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Randevu" asp-action="IslemSec">Randevu Al</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="User" asp-action="Randevularim">Randevularım</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="AiOneri" asp-action="Index">Ai saç tipi önerisi</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-danger" asp-controller="Home" asp-action="Index">Çıkış Yap</a>
+                    </li>
                 </ul>
             </div>
         </div>
