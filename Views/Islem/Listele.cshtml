@@ -1,10 +1,11 @@
 ﻿@model IEnumerable<WebProje.Models.Islem>
 
 @{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
     ViewData["Title"] = "İşlem Listesi";
 }
 
-<h2>İşlem Listesi</h2>
+<h2 class="text-center my-4">İşlemler</h2>
 <br />
 <a asp-action="Create" class="btn btn-primary">Yeni İşlem Ekle</a>
 <br />

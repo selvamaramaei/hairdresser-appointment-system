@@ -1,7 +1,10 @@
 ﻿@model WebProje.Models.Islem
 
 @{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
     ViewData["Title"] = "İşlem Düzenle";
+
 }
 
 <h2>İşlem Düzenle</h2>
@@ -43,10 +46,6 @@
     </div>
     <br />
     <button type="submit" class="btn btn-primary">Kaydet</button>
-    <a asp-action="Index" class="btn btn-secondary">Geri Dön</a>
+    <a asp-action="Listele" class="btn btn-secondary">Geri Dön</a>
 </form>
 
-<!-- Client-Side Doğrulama -->
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
