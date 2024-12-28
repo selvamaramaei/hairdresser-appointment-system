@@ -2,13 +2,14 @@
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
-<h2>Randevu Yönetimi</h2>
+<h2 class ="text-center my-4">Randevu Yönetimi</h2>
 
 <table class="table table-bordered">
     <thead>
         <tr>
             <th>Kullanıcı</th>
             <th>İşlem</th>
+            <th>Ucret</th>
             <th>Personel</th>
             <th>Tarih</th>
             <th>Saat</th>
@@ -23,6 +24,7 @@
                 <tr>
                     <td>@randevu.User.Ad @randevu.User.Soyad</td>
                     <td>@randevu.Islem.Ad</td>
+                    <td>@randevu.Islem.Ucret</td>
                     <td>@randevu.Personel.Ad @randevu.Personel.Soyad</td>
                     <td>@randevu.RandevuTarihi.ToShortDateString()</td>
                     <td>@randevu.RandevuSaati</td>
