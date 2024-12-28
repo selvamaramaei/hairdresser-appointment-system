@@ -11,11 +11,14 @@ namespace WebProje.Controllers
     public class AdminController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public AdminController(AppDbContext context)
+        public AdminController(AppDbContext context, IHttpClientFactory httpClientFactory)
         {
             _context = context;
+            _httpClientFactory = httpClientFactory;
         }
+
         public IActionResult AdminDashboard()
         {
             // Session'dan rolü al
@@ -97,5 +100,31 @@ namespace WebProje.Controllers
             return RedirectToAction("Randevular", "Admin"); // Admin panelindeki randevu listesini gösteren action
         }
 
+        public async Task<IActionResult> KazancListele()
+        {
+            var role = HttpContext.Session.GetString("Role");
+
+            if (string.IsNullOrEmpty(role) || role != "Admin")
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var client = _httpClientFactory.CreateClient();
+            var response = await client.GetAsync("https://localhost:7001/api/Kazanc/AylikKazanclar"); // API rotası
+
+            if (!response.IsSuccessStatusCode)
+            {
+                ViewBag.Error = "Kazanç bilgisi alınamadı.";
+                return View();
+            }
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var kazancListesi = JsonSerializer.Deserialize<List<Kazanc>>(responseContent, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+            return View(kazancListesi); // Model olarak kazanç listesini gönderiyoruz
+        }
     }
 }

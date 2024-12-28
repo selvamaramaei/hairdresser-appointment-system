@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebProje.Context;
+using System.Net.Http.Headers;
 
 namespace WebProje.Controllers
 {
@@ -16,14 +17,18 @@ namespace WebProje.Controllers
         {
             // Session'dan rolü al
             var role = HttpContext.Session.GetString("Role");
+			var username = HttpContext.Session.GetString("Username");
 
-            // Eğer kullanıcı adminse, erişim reddedilir
-            if (string.IsNullOrEmpty(role) || role == "Admin")
+
+
+			// Eğer kullanıcı adminse, erişim reddedilir
+			if (string.IsNullOrEmpty(role) || role == "Admin")
             {
                 return RedirectToAction("Login", "Account");
             }
-
-            return View();
+			ViewBag.UserName = username;
+			
+			return View();
         }
 
         public async Task<IActionResult> Randevularim()
@@ -38,8 +43,6 @@ namespace WebProje.Controllers
 
             return View(randevular);
         }
-
-
 
     }
 }

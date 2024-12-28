@@ -15,9 +15,22 @@ namespace WebProje.Controllers
             _context = context;
         }
 
+        private IActionResult CheckAdminRole()
+        {
+            var role = HttpContext.Session.GetString("Role");
+            if (role == "Admin")
+            {
+                return null; // Admin ise herhangi bir işlem yapmadan devam et
+            }
+            return RedirectToAction("UserDashboard", "User"); // Kullanıcı paneline yönlendir
+        }
         // Listeleme
+
         public async Task<IActionResult> Listele()
         {
+            var roleCheck = CheckAdminRole();
+            if (roleCheck != null) return roleCheck;
+
             var islemler = await _context.Islemler.ToListAsync();
             return View(islemler);
         }
@@ -25,6 +38,9 @@ namespace WebProje.Controllers
         // Yeni işlem oluşturma (GET)
         public IActionResult Create()
         {
+            var roleCheck = CheckAdminRole();
+            if (roleCheck != null) return roleCheck;
+
             return View();
         }
 
@@ -46,6 +62,9 @@ namespace WebProje.Controllers
         // Düzenleme (GET)
         public async Task<IActionResult> Edit(int? id)
         {
+            var roleCheck = CheckAdminRole();
+            if (roleCheck != null) return roleCheck;
+
             if (id == null) return NotFound();
 
             var islem = await _context.Islemler.FindAsync(id);
@@ -104,6 +123,9 @@ namespace WebProje.Controllers
         // Silme (GET)
         public async Task<IActionResult> Delete(int? id)
         {
+            var roleCheck = CheckAdminRole();
+            if (roleCheck != null) return roleCheck;
+
             if (id == null) return NotFound();
 
             var islem = await _context.Islemler.FirstOrDefaultAsync(m => m.Id == id);

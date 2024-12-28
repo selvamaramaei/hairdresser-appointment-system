@@ -17,10 +17,22 @@ namespace WebProje.Controllers
         {
             _context = context;
         }
+        private IActionResult CheckAdminRole()
+        {
+            var role = HttpContext.Session.GetString("Role");
+            if (role == "Admin")
+            {
+                return null; // Admin ise herhangi bir işlem yapmadan devam et
+            }
+            return RedirectToAction("UserDashboard", "User"); // Kullanıcı paneline yönlendir
+        }
 
         // Listeleme
         public async Task<IActionResult> Listele()
         {
+            var roleCheck = CheckAdminRole();
+            if (roleCheck != null) return roleCheck;
+
             var uzmanliklar = await _context.Uzmanliklar
                 .Include(u => u.Islemler)
                 .ToListAsync();
@@ -31,6 +43,9 @@ namespace WebProje.Controllers
         // Yeni uzmanlık oluşturma (GET)
         public async Task<IActionResult> Create()
         {
+            var roleCheck = CheckAdminRole();
+            if (roleCheck != null) return roleCheck;
+
             ViewBag.Islemler = await _context.Islemler.ToListAsync();
             return View();
         }
@@ -72,6 +87,9 @@ namespace WebProje.Controllers
         // Edit Uzmanlık (GET)
         public async Task<IActionResult> Edit(int id)
         {
+            var roleCheck = CheckAdminRole();
+            if (roleCheck != null) return roleCheck;
+
             var uzmanlik = await _context.Uzmanliklar
                 .Include(u => u.Islemler)
                 .FirstOrDefaultAsync(u => u.Id == id);
@@ -136,6 +154,9 @@ namespace WebProje.Controllers
         // Silme Onayı Sayfası (GET)
         public async Task<IActionResult> Delete(int id)
         {
+            var roleCheck = CheckAdminRole();
+            if (roleCheck != null) return roleCheck; 
+
             var uzmanlik = await _context.Uzmanliklar
                 .Include(u => u.Islemler)
                 .FirstOrDefaultAsync(u => u.Id == id);
